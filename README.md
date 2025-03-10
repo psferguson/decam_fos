@@ -10,3 +10,7 @@ Copy of to-do list from [google doc](https://docs.google.com/document/d/1-KDcg5r
 - Look at jet matched filter 
 - Look at decals I-band in unfilled region
 
+Steps for creation:
+- use data stacks I have
+- correct for depth
+- create healsparse mask
