@@ -135,7 +135,7 @@ def plot_stream_annotations(ax, annotations_dict, proj,
 
 
 def plot_fos(ax, image, proj, DES=True, LSST=True, annotations=True, 
-             annotations_dict=None):
+             annotations_dict=None, oval=True):
     ax.imshow(image, origin='lower', extent=proj.get_extent())
     if LSST:
         lsst_ra, lsst_dec = load_lsst_line()
@@ -157,15 +157,16 @@ def plot_fos(ax, image, proj, DES=True, LSST=True, annotations=True,
             outline=True
         )
     # create black oval around image
-    dec_edge = np.linspace(-90, 90, 300)
-    ra_edge = np.ones_like(dec_edge) * 180.3
-    x_edge, y_edge = proj.ang2xy(ra_edge, dec_edge, lonlat=True)
-    ax.plot(x_edge, y_edge, c="k", lw=3, zorder=9)
-    x_edge, y_edge = proj.ang2xy(ra_edge * 0 + 179.7, dec_edge, lonlat=True)
-    ax.plot(x_edge, y_edge, c="k", lw=3, zorder=9)
-
-    ax.legend(loc=(0.7, 0.73), labelcolor="white", facecolor="None", 
-              edgecolor="None", fontsize=20)
+    if oval:
+        dec_edge = np.linspace(-90, 90, 300)
+        ra_edge = np.ones_like(dec_edge) * 180.3
+        x_edge, y_edge = proj.ang2xy(ra_edge, dec_edge, lonlat=True)
+        ax.plot(x_edge, y_edge, c="k", lw=3, zorder=9)
+        x_edge, y_edge = proj.ang2xy(ra_edge * 0 + 179.7, dec_edge, lonlat=True)
+        ax.plot(x_edge, y_edge, c="k", lw=3, zorder=9)
+    if DES or LSST:
+        ax.legend(loc=(0.7, 0.73), labelcolor="white", facecolor="None", 
+                  edgecolor="None", fontsize=20)
     ax.set_axis_off()
     ax.grid(False)
     
