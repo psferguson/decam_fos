@@ -1,0 +1,90 @@
+"300S":
+  ra: 151.0
+  dec: 15.0
+  ra_offset: -10
+  dec_offset: -10
+"AAU (Aliqa Uma)":
+  ra: 40.0
+  dec: -37.0
+  ra_offset: 25
+  dec_offset: -5
+"AAU (Atlas)":
+  ra: 20.0
+  dec: -27.0
+  ra_offset: -40
+  dec_offset: 0
+"Elqui":
+  ra: 17.0
+  dec: -40.0
+  ra_offset: -10
+  dec_offset: -5
+"Indus":
+  ra: 335.0
+  dec: -59.0
+  ra_offset: -15
+  dec_offset: -8
+"Jhelum":
+  ra: 343.0
+  dec: -51.0
+  ra_offset: 10
+  dec_offset: 10
+"Jet":
+  ra: 138.0
+  dec: -19.0
+  ra_offset: -10
+  dec_offset: -3
+"OC (Chenab)":
+  ra: -35.0
+  dec: -50.0
+  ra_offset: -10
+  dec_offset: 15
+"OC (Orphan)":
+  ra: 148.0
+  dec: 35.0
+  ra_offset: -10
+  dec_offset: 5
+"Pal 13":
+  ra: 347
+  dec: 14
+  ra_offset: -15
+  dec_offset: 5
+"Pal 5":
+  ra: 232.0
+  dec: 0.0
+  ra_offset: 15
+  dec_offset: 0.3
+"Palca":
+  ra: 28.0
+  dec: -26.0
+  ra_offset: 15
+  dec_offset: 0
+"Phoenix":
+  ra: 24.0
+  dec: -50.0
+  ra_offset: 20
+  dec_offset: 0.3
+"Sagittarius":
+  ra: 30.0
+  dec: 0
+  ra_offset: 25
+  dec_offset: 18
+"Tri And":
+  ra: 23
+  dec: 25
+  ra_offset: -15
+  dec_offset: 10
+"Tuc III":
+  ra: 359.0
+  dec: -59.0
+  ra_offset: 7
+  dec_offset: 9
+"Turranburra":
+  ra: 60.0
+  dec: -18.0
+  ra_offset: 10
+  dec_offset: 10
+"Willka\nYaku":
+  ra: 37.0
+  dec: -61.0
+  ra_offset: 30
+  dec_offset: 2
