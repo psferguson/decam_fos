@@ -135,7 +135,7 @@ def plot_stream_annotations(ax, annotations_dict, proj,
 
 
 def plot_fos(ax, image, proj, DES=True, LSST=True, annotations=True, 
-             annotations_dict=None, oval=True):
+             annotations_dict=None, oval=True,  white_background=False, name=True):
     ax.imshow(image, origin='lower', extent=proj.get_extent())
     if LSST:
         lsst_ra, lsst_dec = load_lsst_line()
@@ -167,6 +167,15 @@ def plot_fos(ax, image, proj, DES=True, LSST=True, annotations=True,
     if DES or LSST:
         ax.legend(loc=(0.7, 0.73), labelcolor="white", facecolor="None", 
                   edgecolor="None", fontsize=20)
+    if name:
+        if white_background:
+           text_color = "k"
+        else:
+            text_color = "white"
+
+        ax.text(0.01,0.0,"Peter Ferguson & Nora Shipp", color=text_color,
+                fontsize=18, ha="left", va="bottom", transform=ax.transAxes)
+        
     ax.set_axis_off()
     ax.grid(False)
     
