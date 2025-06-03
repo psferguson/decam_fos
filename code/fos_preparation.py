@@ -5,7 +5,7 @@ from skimage.morphology import diameter_closing
 
 
 def load_gaia_density_data(
-        filepath="../data/hpx_maps/gaia_dr3_density_nside_512_nest.fits"
+    filepath="../data/hpx_maps/gaia_dr3_density_nside_512_nest.fits",
 ):
     """Load Gaia density data from a FITS file and normalize it."""
     gaia_data = fitsio.read(filepath)
@@ -28,7 +28,7 @@ def clip_norm(x, min=None, max=None):
 
 
 def renorm_rgb(rgb, pmin=1, pmax=99):
-    """"
+    """ "
     Renormalize RGB channels using percentiles for clipping."
     """
     for i in range(3):
@@ -38,29 +38,33 @@ def renorm_rgb(rgb, pmin=1, pmax=99):
         amax = np.nanpercentile(np.ma.filled(X, np.nan), pmax)
 
         rgb[i] = clip_norm(X, min=amin, max=amax)
-        rgb[i][X == 0] = 0.
+        rgb[i][X == 0] = 0.0
 
-    return rgb   
+    return rgb
 
 
-def get_image(proj, rgb, do_mask_replace=True, mask_arr=None, 
-              mask_replace_arr=None, pmin=0.2, pmax=93):
+def get_image(
+    proj,
+    rgb,
+    do_mask_replace=True,
+    mask_arr=None,
+    mask_replace_arr=None,
+    pmin=0.2,
+    pmax=93,
+):
     rgb = np.ma.copy(rgb)
     rgb = renorm_rgb(rgb, pmin=pmin, pmax=pmax)
     if do_mask_replace:
         if mask_arr is None:
-            raise ValueError(
-                "mask_arr must be provided if do_mask_replace is True"
-                )
+            raise ValueError("mask_arr must be provided if do_mask_replace is True")
         if mask_replace_arr is None:
-            raise ValueError(
-                "mask_replace must be provided if do_mask_replace is True"
-                )
+            raise ValueError("mask_replace must be provided if do_mask_replace is True")
         for i in range(3):
             rgb[i][mask_arr == 1] = mask_replace_arr[mask_arr == 1]
 
-    image = np.stack([proj.projmap(rgb[i].filled(np.nan), vec2pix) 
-                     for i in range(3)], axis=-1)
+    image = np.stack(
+        [proj.projmap(rgb[i].filled(np.nan), vec2pix) for i in range(3)], axis=-1
+    )
 
     return image
 
@@ -72,8 +76,8 @@ def create_base_image(proj, white_background=True):
         bg_value = 1
     else:
         bg_value = 0
-    
-    bg_arr = np.ones_like(proj.projmap(array, vec2pix)).astype(float) 
+
+    bg_arr = np.ones_like(proj.projmap(array, vec2pix)).astype(float)
     bg_arr *= bg_value
     bg_arr[~np.isinf(vpix)] = 0
     bg_image = np.stack([bg_arr for i in range(3)], axis=-1)
@@ -95,16 +99,35 @@ def func_vec2pix(nside):
 vec2pix = func_vec2pix(nside=512)
 
 
-def assemble_image(rgb_des, rgb_decals, mask_arr, gaia_data, proj=None, 
-                   do_diameter_closing=True, white_background=True, do_mask_replace=True):
+def assemble_image(
+    rgb_des,
+    rgb_decals,
+    mask_arr,
+    gaia_data,
+    proj=None,
+    do_diameter_closing=True,
+    white_background=True,
+    do_mask_replace=True,
+):
     if proj is None:
-        proj = hp.projector.MollweideProj() 
-    image_des = get_image(proj, rgb_des, mask_arr=mask_arr, 
-                          mask_replace_arr=gaia_data, do_mask_replace=do_mask_replace)
-    image_decals = get_image(proj, rgb_decals, mask_arr=mask_arr,
-                             mask_replace_arr=gaia_data, do_mask_replace=do_mask_replace)
-    image = stack_image([image_decals, image_des], proj,
-                        white_background=white_background)
+        proj = hp.projector.MollweideProj()
+    image_des = get_image(
+        proj,
+        rgb_des,
+        mask_arr=mask_arr,
+        mask_replace_arr=gaia_data,
+        do_mask_replace=do_mask_replace,
+    )
+    image_decals = get_image(
+        proj,
+        rgb_decals,
+        mask_arr=mask_arr,
+        mask_replace_arr=gaia_data,
+        do_mask_replace=do_mask_replace,
+    )
+    image = stack_image(
+        [image_decals, image_des], proj, white_background=white_background
+    )
 
     if do_diameter_closing:
         print("Applying diameter closing to the image...")
@@ -114,9 +137,7 @@ def assemble_image(rgb_des, rgb_decals, mask_arr, gaia_data, proj=None,
         # Apply diameter closing to each channel
         for channel in range(3):  # R, G, B
             closed_image[..., channel] = diameter_closing(
-                image[..., channel],
-                diameter_threshold=10,  
-                connectivity=2         
+                image[..., channel], diameter_threshold=10, connectivity=2
             )
         image = closed_image
     return image, proj
