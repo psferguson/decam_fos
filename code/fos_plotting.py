@@ -135,7 +135,9 @@ def plot_stream_annotations(ax, annotations_dict, proj,
 
 
 def plot_fos(ax, image, proj, DES=True, LSST=True, annotations=True, 
-             annotations_dict=None, oval=True,  white_background=False, name=True):
+             annotations_dict=None, oval=True,  white_background=False, name=True, grid=False,
+                            grid_color="white",
+                            grid_alpha=0.5,):
     ax.imshow(image, origin='lower', extent=proj.get_extent())
     if LSST:
         lsst_ra, lsst_dec = load_lsst_line()
@@ -164,6 +166,37 @@ def plot_fos(ax, image, proj, DES=True, LSST=True, annotations=True,
         ax.plot(x_edge, y_edge, c="k", lw=3, zorder=9)
         x_edge, y_edge = proj.ang2xy(ra_edge * 0 + 179.7, dec_edge, lonlat=True)
         ax.plot(x_edge, y_edge, c="k", lw=3, zorder=9)
+
+    # --- Add RA/Dec grid lines ---
+    if grid:
+        # Draw Dec grid lines
+        for dec in np.arange(-80, 90, 10):
+            ra_grid = np.linspace(0, 360, 500)
+            dec_grid = np.ones_like(ra_grid) * dec
+            xg, yg = proj.ang2xy(ra_grid, dec_grid, lonlat=True)
+            ax.plot(xg, yg, color=grid_color, lw=0.8, alpha=grid_alpha, zorder=1)
+        # Draw RA grid lines
+        for ra in np.arange(0, 360, 30):
+            dec_grid = np.linspace(-90, 90, 500)
+            ra_grid = np.ones_like(dec_grid) * ra
+            xg, yg = proj.ang2xy(ra_grid, dec_grid, lonlat=True)
+            ax.plot(xg, yg, color=grid_color, lw=0.8, alpha=grid_alpha, zorder=1)
+
+        # Add RA tick labels at Dec=0
+        ra_ticks = np.arange(0, 360, 30)
+        dec0 = np.zeros_like(ra_ticks)
+        x_ticks, y_ticks = proj.ang2xy(ra_ticks, dec0, lonlat=True)
+        for x, y, ra in zip(x_ticks, y_ticks, ra_ticks):
+            ax.text(x, y-0.03*(ax.get_ylim()[1]-ax.get_ylim()[0]), f"{int(ra)}°", 
+                    color=grid_color, fontsize=10, ha='center', va='top')
+
+        # Add Dec tick labels at RA=0
+        dec_ticks = np.arange(-80, 90, 10)
+        ra0 = np.zeros_like(dec_ticks)
+        x_ticks, y_ticks = proj.ang2xy(ra0, dec_ticks, lonlat=True)
+        for x, y, dec in zip(x_ticks, y_ticks, dec_ticks):
+            ax.text(x-0.01*(ax.get_xlim()[1]-ax.get_xlim()[0]), y, f"{int(dec)}°", 
+                    color=grid_color, fontsize=10, ha='right', va='center')
     if DES or LSST:
         ax.legend(loc=(0.7, 0.73), labelcolor="white", facecolor="None", 
                   edgecolor="None", fontsize=20)

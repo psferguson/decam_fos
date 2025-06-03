@@ -96,13 +96,13 @@ vec2pix = func_vec2pix(nside=512)
 
 
 def assemble_image(rgb_des, rgb_decals, mask_arr, gaia_data, proj=None, 
-                   do_diameter_closing=True, white_background=True):
+                   do_diameter_closing=True, white_background=True, do_mask_replace=True):
     if proj is None:
         proj = hp.projector.MollweideProj() 
     image_des = get_image(proj, rgb_des, mask_arr=mask_arr, 
-                          mask_replace_arr=gaia_data)
+                          mask_replace_arr=gaia_data, do_mask_replace=do_mask_replace)
     image_decals = get_image(proj, rgb_decals, mask_arr=mask_arr,
-                             mask_replace_arr=gaia_data)
+                             mask_replace_arr=gaia_data, do_mask_replace=do_mask_replace)
     image = stack_image([image_decals, image_des], proj,
                         white_background=white_background)
 
